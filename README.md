@@ -1,1 +1,1 @@
-# eks-tmc-terraform-provider
+# TMC Terraform Provider for EKS
