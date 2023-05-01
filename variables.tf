@@ -1,4 +1,4 @@
-variable "vmw_host" {
+variable "tmc_host" {
   type        = string
   description = "TMC Host"
 }
