@@ -15,31 +15,6 @@ provider "tanzu-mission-control" {
   # vmw_cloud_api_endpoint = "console.cloud.vmware.com" or optionally use VMW_CLOUD_ENDPOINT env var
 }
 
-resource "tanzu-mission-control_credential" "aws_eks_cred" {
-  name = "eks-cred-kirti"
-
-  meta {
-    description = "credential"
-    labels = {
-      "key1" : "value1",
-    }
-  }
-
-  spec {
-    capability = "MANAGED_K8S_PROVIDER"
-    provider = "AWS_EKS"
-    data {
-      aws_credential {
-        account_id = var.account_id
-        iam_role{
-          arn = var.arn
-          ext_id =""
-        }
-      }
-    }
-  }
-}
-
 // Tanzu Mission Control EKS Cluster Type: AWS EKS clusters.
 // Operations supported : Read, Create, Update & Delete
 
