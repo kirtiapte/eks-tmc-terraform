@@ -1,4 +1,4 @@
-# TMC Terraform Provider for EKS
+# TMC Terraform for EKS
 
 - Create EKS credentials through Tanzu Mission Control UI
 - Create VPCs and subnets following this document
