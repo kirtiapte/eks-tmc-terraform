@@ -74,7 +74,7 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
       }
 
       spec {
-        role_arn       = "arn:aws:iam::685767138629:role/worker.18115418072985548507.eks.tmc.cloud.vmware.com"
+        role_arn       = "arn:aws:iam::685767138629:role/worker.3113216704993936405.eks.tmc.cloud.vmware.com"
         ami_type       = "AL2_x86_64"
         capacity_type  = "ON_DEMAND"
         root_disk_size = 40 // Default: 20GiB
