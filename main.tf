@@ -1,51 +1,41 @@
 terraform {
   required_providers {
     tanzu-mission-control = {
-      source  = "vmware/tanzu-mission-control"
-      version = "1.1.5"
+      source = "vmware/tanzu-mission-control"
+      version = "1.1.5"    # it's the provider version and you can change it as version changes
     }
+  }
 }
-
 provider "tanzu-mission-control" {
-  endpoint            = var.tmc_host      # optionally use TMC_ENDPOINT env var
+  endpoint            = var.vmw_host            # optionally use TMC_ENDPOINT env var
   vmw_cloud_api_token = var.vmw_api_token # optionally use VMW_CLOUD_API_TOKEN env var
-
   # if you are using dev or different csp endpoint, change the default value below
   # for production environments the csp_endpoint is console.cloud.vmware.com
   # vmw_cloud_api_endpoint = "console.cloud.vmware.com" or optionally use VMW_CLOUD_ENDPOINT env var
 }
 
-// Tanzu Mission Control EKS Cluster Type: AWS EKS clusters.
-// Operations supported : Read, Create, Update & Delete
-
-// Read Tanzu Mission Control AWS EKS cluster : fetch cluster details
-data "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
-  credential_name = "sp-eks-tf-cred" // Required
-  region          = "us-east-1"          // Required
-  name            = "sp-tf-auto"        // Required
-}
-
-// Create Tanzu Mission Control AWS EKS cluster entry
+# Create a Tanzu Mission Control AWS EKS cluster entry
 resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
-  credential_name = "sp-eks-tf-cred" // Required
-  region          = "us-east-1"          // Required
-  name            = "sp-tf-auto"        // Required
+  credential_name = "tf-eks"          // Required
+  region          = "us-west-2"         // Required
+  name            = "tf2-eks-cluster-2" // Required
 
   ready_wait_timeout = "30m" // Wait time for cluster operations to finish (default: 30m).
 
   meta {
-    description = "description of the cluster"
-    labels      = { "mode" : "automation", "username" : "sp" }
+    description = "eks test cluster"
+    labels      = { "key1" : "value1" }
   }
 
   spec {
-    cluster_group = "sp-cluster-grp" // Default: default
-    #proxy         = "" //if used 
+    cluster_group = "kirti-demo" // Default: default
+    #proxy		  = "<proxy>"              // Proxy if used
 
     config {
-      role_arn           = "arn:aws:iam::687456942232:role/control-plane.11197733977849512268.eks.tmc.cloud.vmware.com" // Required, forces new
-      kubernetes_version = "1.24"                // Required
-      tags               = { "mode" : "terraform" }
+      role_arn = "arn:aws:iam::685767138629:role/control-plane.3113216704993936405.eks.tmc.cloud.vmware.com" // Required, forces new
+
+      kubernetes_version = "1.24" // Required
+      tags               = { "tagkey" : "tagvalue" }
 
       kubernetes_network_config {
         service_cidr = "10.100.0.0/16" // Forces new
@@ -66,44 +56,42 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
           "0.0.0.0/0",
         ]
         security_groups = [ // Forces new
-          "sg-0395139026e380a43",
+          "sg-071fcc3347e380890",
         ]
         subnet_ids = [ // Forces new
-          "subnet-0071b3b1ec3233eee",
-          "subnet-04c5221ee2db53796",
-          "subnet-0ecfbfb553eef704a",
-          "subnet-09c63bb69bf76578e"
+          "subnet-0f73351d50b9af409",
+          "subnet-0501a09b610a6dbac",
+          "subnet-0dc6346960290d444",
+          "subnet-0ea22442dab17760e"
         ]
       }
     }
 
     nodepool {
       info {
-        name        = "small-pool" // Required
-        description = "nodepool for eks cluster"
+        name        = "fist-np"
+        description = "tf nodepool description"
       }
 
       spec {
-        // Refer to nodepool's schema
-        role_arn       = "arn:aws:iam::687456942232:role/worker.11197733977849512268.eks.tmc.cloud.vmware.com" // Required
+        role_arn       = "arn:aws:iam::685767138629:role/worker.18115418072985548507.eks.tmc.cloud.vmware.com"
         ami_type       = "AL2_x86_64"
         capacity_type  = "ON_DEMAND"
-        root_disk_size = 40 // In GiB, default: 20GiB
-        tags           = { "mode" : "automation" }
-        node_labels    = { "tool" : "tf" }
+        root_disk_size = 40 // Default: 20GiB
+        tags           = { "nptag" : "nptagvalue9" }
+        node_labels    = { "nplabelkey" : "nplabelvalue" }
 
         subnet_ids = [ // Required
-          "subnet-0071b3b1ec3233eee",
-          "subnet-04c5221ee2db53796",
-          "subnet-0ecfbfb553eef704a",
-          "subnet-09c63bb69bf76578e"
+          "subnet-0f73351d50b9af409",
+          "subnet-0501a09b610a6dbac",
+          "subnet-0dc6346960290d444",
+          "subnet-0ea22442dab17760e"
         ]
-
-        remote_access {
+       remote_access {
           ssh_key = "sp-tf-auto-key" // Required (if remote access is specified)
 
           security_groups = [
-            "sg-0395139026e380a43",
+            "sg-071fcc3347e380890",
           ]
         }
 
@@ -124,6 +112,5 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
 
       }
     }
-
   }
 }
