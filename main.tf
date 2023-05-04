@@ -18,7 +18,7 @@ provider "tanzu-mission-control" {
 resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
   credential_name = "tf-eks"          // Required
   region          = "us-west-2"         // Required
-  name            = "tf2-eks-cluster-2" // Required
+  name            = "tf2-eks-cluster-4" // Required
 
   ready_wait_timeout = "30m" // Wait time for cluster operations to finish (default: 30m).
 
@@ -50,7 +50,7 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
       }
 
       vpc { // Required
-        enable_private_access = true
+        enable_private_access = false
         enable_public_access  = true
         public_access_cidrs = [
           "0.0.0.0/0",
@@ -69,7 +69,7 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
 
     nodepool {
       info {
-        name        = "fist-np"
+        name        = "second-np"
         description = "tf nodepool description"
       }
 
@@ -87,14 +87,6 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
           "subnet-0dc6346960290d444",
           "subnet-0ea22442dab17760e"
         ]
-       remote_access {
-          ssh_key = "sp-tf-auto-key" // Required (if remote access is specified)
-
-          security_groups = [
-            "sg-071fcc3347e380890",
-          ]
-        }
-
         scaling_config {
           desired_size = 3
           max_size     = 5
@@ -102,7 +94,7 @@ resource "tanzu-mission-control_ekscluster" "tf_eks_cluster" {
         }
 
         update_config {
-          max_unavailable_nodes = "10"
+          max_unavailable_nodes = "4"
         }
 
         instance_types = [
